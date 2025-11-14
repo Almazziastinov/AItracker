@@ -5,7 +5,7 @@ import json
 url = "http://127.0.0.1:8000/api/v1/process"
 payload = {
     "user_id": 777,
-    "text": "сделать домашку по матану часа на 2, а потом созвон с научруком в 19:00"
+    "text": "завтра встреча на улице Баумана, поеду из дома"
 }
 headers = {
     "Content-Type": "application/json"

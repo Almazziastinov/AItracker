@@ -9,3 +9,4 @@ langchain-gigachat
 # Other
 python-dotenv
 salute-speech
+openrouteservice
