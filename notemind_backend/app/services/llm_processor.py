@@ -1,6 +1,5 @@
 import asyncio
 import os
-from dotenv import load_dotenv
 from typing import List, TypedDict, Annotated
 import operator
 from datetime import datetime
@@ -13,7 +12,6 @@ from langgraph.graph import StateGraph, END
 from app.crud import actions
 
 # --- Загрузка конфигурации ---
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '.env'))
 GIGACHAT_CREDENTIALS = os.getenv("GIGACHAT_CREDENTIALS")
 if not GIGACHAT_CREDENTIALS:
     raise ValueError("GIGACHAT_CREDENTIALS не найден в .env файле!")
