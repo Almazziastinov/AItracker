@@ -10,6 +10,7 @@ from langchain.tools import tool
 from langgraph.graph import StateGraph, END
 
 from app.crud import actions
+from app.services.ai_planner import plan_task
 
 # --- Загрузка конфигурации ---
 GIGACHAT_CREDENTIALS = os.getenv("GIGACHAT_CREDENTIALS")
@@ -46,10 +47,26 @@ async def create_event(user_id: int, title: str, start_time: str, location: str 
 
 @tool
 async def create_task(user_id: int, title: str, duration_hours: float = None, deadline: str = None) -> str:
-    """Создает задачу, у которой есть длительность, но нет фиксированного времени начала."""
+    """
+    Создает задачу. Если указана длительность, пытается автоматически запланировать ее в календаре.
+    """
     print(f"--- ИНСТРУМЕНТ: create_task для user_id={user_id} ---")
-    await actions.save_task(user_id, title, duration_hours, deadline)
-    return f"Задача '{title}' успешно сохранена."
+    
+    # 1. Сохраняем саму задачу
+    task = await actions.save_task(user_id, title, duration_hours, deadline)
+    
+    # 2. Если есть длительность, пытаемся ее запланировать
+    if duration_hours:
+        print(f"    -> У задачи есть длительность, запускаем планировщик...")
+        planned_event = await plan_task(task, user_id)
+        
+        if planned_event:
+            planned_time = datetime.fromisoformat(planned_event['start_time']).strftime('%d %B в %H:%M')
+            return f"Задача '{title}' создана и автоматически запланирована на {planned_time}."
+        else:
+            return f"Задача '{title}' создана, но найти свободный слот для планирования не удалось."
+            
+    return f"Задача '{title}' успешно создана (без времени в календаре)."
 
 @tool
 async def log_health_metric(user_id: int, metric: str, value: str) -> str:

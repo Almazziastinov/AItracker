@@ -62,3 +62,14 @@ async def save_health_metric(user_id: int, metric: str, value: str) -> Dict[str,
     mock_db["health_metrics"].append(health_metric)
     print(f"    Метрика сохранена: {health_metric}")
     return health_metric
+
+# --- Функции для чтения данных ---
+
+async def get_events(user_id: int) -> List[Dict[str, Any]]:
+    """
+    Имитирует получение всех событий для конкретного пользователя.
+    """
+    print(f"--- CRUD-ДЕЙСТВИЕ: Получение событий для user_id={user_id} ---")
+    user_events = [event for event in mock_db["events"] if event["user_id"] == user_id]
+    print(f"    Найдено событий: {len(user_events)}")
+    return user_events
