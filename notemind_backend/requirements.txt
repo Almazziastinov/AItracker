@@ -1,0 +1,11 @@
+# Web Framework
+fastapi
+uvicorn
+
+# LangChain & GigaChat
+langgraph
+langchain-gigachat
+
+# Other
+python-dotenv
+salute-speech
