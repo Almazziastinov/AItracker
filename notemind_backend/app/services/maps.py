@@ -23,9 +23,10 @@ if ORS_API_KEY:
 # 1. API ГЕОКОДЕРА (ORS) - АДРЕС -> КООРДИНАТЫ 
 # ------------------------------------------------------------
 
-def get_coords_by_address(address: str) -> tuple[float, float] | None:
+def get_coords_by_address(address: str, bias_coords: tuple[float, float] = None) -> tuple[float, float] | None:
     """
     Преобразует адрес в координаты (долгота, широта), используя ORS Geocoding HTTP API.
+    Может принимать необязательные координаты для приоритетного поиска в этом районе.
     
     Returns: tuple[longitude, latitude] or None
     """
@@ -41,6 +42,12 @@ def get_coords_by_address(address: str) -> tuple[float, float] | None:
         'text': address,
         'size': 1               
     }
+
+    # Добавляем "подсказку" для геокодера, если она есть
+    if bias_coords:
+        params['focus.point.lon'] = bias_coords[0]
+        params['focus.point.lat'] = bias_coords[1]
+        print(f"    Using focus point bias: {bias_coords}")
 
     try:
         response = requests.get(ORS_GEOCODE_URL, headers=headers, params=params)
