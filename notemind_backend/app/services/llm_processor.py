@@ -10,6 +10,8 @@ from langchain_core.messages import HumanMessage, BaseMessage, ToolMessage, Syst
 from langchain.tools import tool
 from langgraph.graph import StateGraph, END
 
+from app.crud import actions
+
 # --- Загрузка конфигурации ---
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '.env'))
 GIGACHAT_CREDENTIALS = os.getenv("GIGACHAT_CREDENTIALS")
@@ -40,22 +42,22 @@ class AgentState(TypedDict):
 @tool
 async def create_event(user_id: int, title: str, start_time: str, location: str = None) -> str:
     """Создает событие с фиксированным временем в календаре."""
-    print(f"--- ИНСТРУМЕНТ (ЗАГЛУШКА): create_event для user_id={user_id} ---")
-    print(f"    Название: {title}, Время: {start_time}, Место: {location}")
-    return f"Событие '{title}' на {start_time} успешно создано."
+    print(f"--- ИНСТРУМЕНТ: create_event для user_id={user_id} ---")
+    await actions.save_event(user_id, title, start_time, location)
+    return f"Событие '{title}' на {start_time} успешно сохранено."
 
 @tool
 async def create_task(user_id: int, title: str, duration_hours: float = None, deadline: str = None) -> str:
     """Создает задачу, у которой есть длительность, но нет фиксированного времени начала."""
-    print(f"--- ИНСТРУМЕНТ (ЗАГЛУШКА): create_task для user_id={user_id} ---")
-    print(f"    Название: {title}, Длительность: {duration_hours}ч, Дедлайн: {deadline}")
-    return f"Задача '{title}' успешно создана."
+    print(f"--- ИНСТРУМЕНТ: create_task для user_id={user_id} ---")
+    await actions.save_task(user_id, title, duration_hours, deadline)
+    return f"Задача '{title}' успешно сохранена."
 
 @tool
 async def log_health_metric(user_id: int, metric: str, value: str) -> str:
     """Записывает метрику о самочувствии пользователя."""
-    print(f"--- ИНСТРУМЕНТ (ЗАГЛУШКА): log_health_metric для user_id={user_id} ---")
-    print(f"    Метрика: {metric}, Значение: {value}")
+    print(f"--- ИНСТРУМЕНТ: log_health_metric для user_id={user_id} ---")
+    await actions.save_health_metric(user_id, metric, value)
     return f"Запись о самочувствии '{metric}: {value}' сохранена."
 
 # ... Другие инструменты, такие как get_travel_time и schedule_task, могут быть добавлены позже
