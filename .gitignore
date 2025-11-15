@@ -128,4 +128,5 @@ cython_debug/
 # Config files
 telegram_bot/config.py
 
-output/notes.pickle
+output/notes.pickle.DS_Store
+**/.DS_Store
