@@ -30,6 +30,11 @@ def get_coords_by_address(address: str, bias_coords: tuple[float, float] = None)
     
     Returns: tuple[longitude, latitude] or None
     """
+    # Не отправляем запрос, если адрес пустой
+    if not address or not address.strip():
+        print("ORS Geocoder: Address is empty, skipping API call.")
+        return None
+
     if not ORS_API_KEY:
         print("ERROR: ORS API key not found.")
         return None

@@ -152,6 +152,12 @@ def should_continue(state: AgentState):
     print("--- УЗЕЛ: should_continue ---")
     return "tools" if state["messages"][-1].tool_calls else END
 
+# --- Управление состоянием диалогов ---
+# Простое in-memory хранилище для истории чатов.
+# Ключ - user_id, значение - список сообщений.
+chat_histories: Dict[int, List[BaseMessage]] = {}
+
+
 # --- Построение графа ---
 workflow = StateGraph(AgentState)
 workflow.add_node("agent", call_model)
@@ -163,12 +169,28 @@ app_graph = workflow.compile()
 
 # --- Функция для запуска агента ---
 async def run_agent_async(user_input: str, user_id: int):
-    messages = [
-        SystemMessage(content=SYSTEM_PROMPT),
-        HumanMessage(content=user_input)
-    ]
+    """
+    Запускает LLM-агента с поддержкой истории сообщений.
+    """
+    # 1. Получаем историю сообщений для данного пользователя
+    # Если истории нет, создаем новую с системным промптом
+    messages = chat_histories.get(user_id, [SystemMessage(content=SYSTEM_PROMPT)])
+    
+    # 2. Добавляем новое сообщение от пользователя в историю
+    messages.append(HumanMessage(content=user_input))
+    
+    # 3. Вызываем графа с полной историей сообщений
     final_state = await app_graph.ainvoke({
         "messages": messages,
         "user_id": user_id,
     })
-    return final_state["messages"][-1].content
+    
+    # 4. Получаем последнее сообщение (ответ агента)
+    response_message = final_state["messages"][-1]
+    
+    # 5. Обновляем историю, добавляя и сообщение пользователя, и ответ агента
+    # Мы уже добавили HumanMessage, теперь добавим ответ
+    chat_histories[user_id] = messages + [response_message]
+
+    # 6. Возвращаем только текст ответа
+    return response_message.content

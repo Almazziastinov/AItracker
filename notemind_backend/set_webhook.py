@@ -2,15 +2,9 @@ import os
 import requests
 from dotenv import load_dotenv
 
-# -------------------------------------------------------------
-# ВАЖНО: УКАЖИТЕ АКТУАЛЬНЫЙ АДРЕС ВАШЕГО ТУННЕЛЯ LOCAL_TUNNEL
-# -------------------------------------------------------------
-WEBHOOK_URL = "https://short-mails-scream.loca.lt/webhook" # Обновите перед запуском!
-# -------------------------------------------------------------
-
-
 load_dotenv()
 MAX_BOT_TOKEN = os.getenv("MAX_BOT_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 # ТОЧНЫЙ ЭНДПОИНТ ИЗ ДОКУМЕНТАЦИИ (POST /subscriptions)
 MAX_API_SET_URL = "https://platform-api.max.ru/subscriptions" 
@@ -42,6 +36,9 @@ def attempt_set_webhook(api_url: str, headers: dict, payload: dict, attempt_name
 def set_webhook():
     if not MAX_BOT_TOKEN:
         print("❌ ОШИБКА: MAX_BOT_TOKEN не найден. Проверьте .env")
+        return
+    if not WEBHOOK_URL:
+        print("❌ ОШИБКА: WEBHOOK_URL не найден. Проверьте .env и убедитесь, что ваш туннель (localtunnel/ngrok) запущен.")
         return
     
     # 1. СТРАТЕГИЯ АВТОРИЗАЦИИ: ТОЧНОЕ СООТВЕТСТВИЕ ДОКУМЕНТАЦИИ MAX
