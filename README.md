@@ -39,6 +39,10 @@ MAX_BOT_TOKEN="ВАШ_ТОКЕН_MAX_BOT"
 # Ключ для API сервиса OpenRouteService (для геокодинга)
 ORS_API_KEY="ВАШ_КЛЮЧ_ORS"
 
+SBER_SPEECH_API_KEY=
+
+DATABASE_URL=
+
 # URL для вебхука (этот адрес мы получим на следующем шаге)
 WEBHOOK_URL=""
 ```
