@@ -66,7 +66,7 @@ WEBHOOK_URL=""
 
 ```env
 # ... (остальные переменные)
-WEBHOOK_URL="https://some-random-name.loca.lt"
+WEBHOOK_URL=https://some-random-name.loca.lt/webhook #ОБЯЗАТЕЛЬНО ПОСЛЕ ВАШЕГО АДРЕСА ДОЛЖНО БЫТЬ /webhook
 ```
 
 ### 6. Сборка и запуск Docker-контейнеров
