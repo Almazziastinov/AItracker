@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Копируем весь остальной код проекта в рабочую директорию
+COPY *.py .
 COPY ./app /app/app
 
 # Команда для запуска приложения
