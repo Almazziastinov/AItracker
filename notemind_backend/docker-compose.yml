@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: notemind_user
+      POSTGRES_PASSWORD: notemind_password
+      POSTGRES_DB: notemind_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notemind_user -d notemind_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy 
+    environment:
+      DATABASE_URL: postgresql+asyncpg://notemind_user:notemind_password@db:5432/notemind_db
+      GIGACHAT_CREDENTIALS: ${GIGACHAT_CREDENTIALS}
+      MAX_BOT_TOKEN: ${MAX_BOT_TOKEN}
+      ORS_API_KEY: ${ORS_API_KEY}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      
+volumes:
+  postgres_data:
+
+    

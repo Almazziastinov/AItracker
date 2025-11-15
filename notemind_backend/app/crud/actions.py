@@ -3,13 +3,10 @@
 # В будущем это будет заменено на реальные запросы к базе данных
 
 from typing import Dict, List, Any
-<<<<<<< HEAD
-=======
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, or_, select
 from datetime import datetime, timedelta
 from app.database import models
->>>>>>> origin/dev_danya
 
 # --- Имитация базы данных ---
 mock_db: Dict[str, List[Dict[str, Any]]] = {
@@ -80,8 +77,6 @@ async def get_events(user_id: int) -> List[Dict[str, Any]]:
     user_events = [event for event in mock_db["events"] if event["user_id"] == user_id]
     print(f"    Найдено событий: {len(user_events)}")
     return user_events
-<<<<<<< HEAD
-=======
 
 # --- АСИНХРОННЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С БАЗОЙ ДАННЫХ ---
 
@@ -252,4 +247,3 @@ async def get_recent_health_metrics(db: AsyncSession, user_id: int, days: int = 
         ).order_by(models.HealthMetric.recorded_at.asc())
     )
     return result.scalars().all()
->>>>>>> origin/dev_danya
